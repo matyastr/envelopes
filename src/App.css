@@ -1,0 +1,61 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.balance {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  margin-left: 25%;
+  margin-right: 25%;
+  border-width: 3px;
+  border-radius: 10px;
+  border-color: black;
+  border-style: solid;
+}
+
+.envelope-list {
+  margin-left: "25%";
+  margin-right: "25%";
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.add-container {
+  flex: auto;
+  flex-direction: row;
+}
+
+.add-title {
+  margin-right: 1rem;
+}
+
+.error {
+  color: red;
+  margin-top: 1rem;
+}
+
+.input {
+  padding: 8px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.envelope {
+  display: flex;
+  min-height: 15em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.card {
+  padding: 2em;
+}

@@ -1,0 +1,22 @@
+.container {
+  padding: 16;
+  border-bottom-width: 1;
+  border-bottom-color: #ccc;
+  background-color: '#fff';
+}
+
+.content {
+  flex-direction: 'row';
+  justify-content: 'space-between';
+  align-items: 'center';
+}
+
+.title {
+  font-size: 16;
+  font-weight: 'bold';
+}
+
+.amount {
+  font-size: 16;
+  color: '#4CAF50';
+}
