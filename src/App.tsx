@@ -1,98 +1,98 @@
+// Please build an envelope budgeting app
+
+// x I can view a list of envelopes
+// x I can add income
+// x I can move income to envelopes. It subtracts from income and adds to the envelope.
+// x I can spend money out of envelopes. It subtracts the money spent from the envelope.
+// I can save and retrive the data from a database
+
+// TODO: hook up add funds and substract funds
+// connect to database
+// clean up and push to Github
+
 import { useState } from "react";
 import type { IEnvelopeListItem } from "./components/EnvelopeListItem";
 import "./App.css";
+import EnvelopeListItem from "./components/EnvelopeListItem";
 
 function App() {
   const [accountBalance, setAccountBalance] = useState(100);
   const [envelopes, setEnvelopes] = useState<IEnvelopeListItem[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [newEnvelopeTitle, setNewEnvelopeTitle] = useState<string>("");
-
-  const subtractFromBalance = (amount: number) => {
-    if (accountBalance - amount < 0) {
-      setErrorMessage("Insufficient funds");
-      return;
-    }
-
-    setAccountBalance((balance) => balance - amount);
-  };
+  const [newFundsAmount, setNewFundsAmount] = useState<string>("");
 
   const addToBalance = (amount: number) => {
     setAccountBalance((balance) => balance + amount);
   };
 
-  const addEnvelope = (title: string, amount: number) => {
-    if (amount > accountBalance) {
-      setErrorMessage("Insufficient funds to create this envelope");
-      return;
-    }
-
+  const addEnvelope = (title: string) => {
     if (newEnvelopeTitle === "") {
       setErrorMessage("Please enter an envelope name.");
       return;
     }
 
-    const newEnvelope: IEnvelopeListItem = { title, amount };
+    const newEnvelope: IEnvelopeListItem = {
+      title: title,
+    };
     setEnvelopes((prevEnvelopes) => [...prevEnvelopes, newEnvelope]);
-    subtractFromBalance(amount);
 
     setErrorMessage(null);
   };
 
-  const deleteEnvelope = (index: number) => {
-    const envelopeToDelete = envelopes[index];
-    addToBalance(envelopeToDelete.amount);
+  const addFunds = (amount: number) => {
+    if (isNaN(amount) || amount <= 0) {
+      setErrorMessage("Please enter a valid amount to add.");
+      return;
+    }
 
+    setAccountBalance((balance) => balance + amount);
+    setErrorMessage(null);
+  };
+
+  const deleteEnvelope = (index: number) => {
     setEnvelopes((prevEnvelopes) =>
       prevEnvelopes.filter((_, i) => i !== index)
     );
   };
 
   const renderList = envelopes.map((envelope, index) => (
-    <div className="envelope" key={index}>
-      <h3>{envelope.title}</h3>
-      <p>${envelope.amount.toFixed(2)}</p>
-      <button
-        onClick={() => {
-          deleteEnvelope(index);
-        }}
-      >
-        Delete Envelope
-      </button>
-      <input
-            type="text"
-            className="input"
-            placeholder="Enter amount"
-            onChange={(e) => setNewEnvelopeTitle(e.target.value)}
-          />
-      <button
-        onClick={() => {
-          deleteEnvelope(index);
-        }}
-      >
-        Add Funds
-      </button>
-      <button
-        onClick={() => {
-          deleteEnvelope(index);
-        }}
-      >
-        Subtract Funds
-      </button>
-    </div>
+    <EnvelopeListItem
+      key={index}
+      title={envelope.title}
+      index={index}
+      accountBalance={accountBalance}
+      setAccountBalance={setAccountBalance}
+      addToBalance={addToBalance}
+      deleteEnvelope={deleteEnvelope}
+    />
   ));
 
   return (
     <>
       <h1>Envelopes Budgetting</h1>
-      <div className="card">
+      <div>
         <h2>Main Account Balance</h2>
         <div className="balance">${accountBalance}</div>
         {errorMessage && <p className="error">{errorMessage}</p>}
         <div className="add-container">
           <button
             className="add-title"
-            onClick={() => addEnvelope(newEnvelopeTitle, 0)}
+            onClick={() => addFunds(Number(newFundsAmount))}
+          >
+            Add Funds
+          </button>
+          <input
+            type="text"
+            className="input"
+            placeholder="Enter amount to add"
+            onChange={(e) => setNewFundsAmount(e.target.value)}
+          />
+        </div>
+        <div className="add-container">
+          <button
+            className="add-title"
+            onClick={() => addEnvelope(newEnvelopeTitle)}
           >
             Add Envelope
           </button>

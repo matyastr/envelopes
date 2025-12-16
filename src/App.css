@@ -17,8 +17,8 @@
 }
 
 .envelope-list {
-  margin-left: "25%";
-  margin-right: "25%";
+  margin-left: "4%";
+  margin-right: "10%";
   margin-top: 2rem;
   text-align: center;
 }
@@ -46,16 +46,29 @@
   width: 200px;
 }
 
+.add-sub-button {
+  margin-left: 1em;
+};
+
+.inner-card {
+  padding: 100px;
+  border-width: 3px;
+  border-radius: 10px;
+  border-color: black;
+  border-style: solid;
+}
+
+.delete-button {
+  margin: 1em;
+}
+
 .envelope {
   display: flex;
-  min-height: 15em;
+  height: 100px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 10px;
   margin-bottom: 1rem;
   flex-direction: row;
   justify-content: space-around;
-}
-
-.card {
-  padding: 2em;
 }

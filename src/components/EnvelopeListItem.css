@@ -5,6 +5,17 @@
   background-color: '#fff';
 }
 
+.envelope {
+  display: flex;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 .content {
   flex-direction: 'row';
   justify-content: 'space-between';
@@ -19,4 +30,33 @@
 .amount {
   font-size: 16;
   color: '#4CAF50';
+}
+
+.error {
+  color: red;
+}
+
+.input {
+  padding: 8px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.add-sub-button {
+  margin-left: 1em;
+};
+
+.inner-card {
+  padding: 100px;
+  border-width: 3px;
+  border-radius: 10px;
+  border-color: black;
+  border-style: solid;
+}
+
+.delete-button {
+  margin: 1em;
 }
