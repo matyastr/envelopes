@@ -4,13 +4,9 @@
 // x I can add income
 // x I can move income to envelopes. It subtracts from income and adds to the envelope.
 // x I can spend money out of envelopes. It subtracts the money spent from the envelope.
-// I can save and retrive the data from a database
+// x I can save and retrive the data from a database
 
-// TODO: hook up add funds and substract funds
-// connect to database
-// clean up and push to Github
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { IEnvelopeListItem } from "./components/EnvelopeListItem";
 import "./App.css";
 import EnvelopeListItem from "./components/EnvelopeListItem";
@@ -22,8 +18,61 @@ function App() {
   const [newEnvelopeTitle, setNewEnvelopeTitle] = useState<string>("");
   const [newFundsAmount, setNewFundsAmount] = useState<string>("");
 
+  useEffect(() => {
+    const mainBalance = localStorage.getItem("main-balance");
+
+    if (mainBalance) {
+      const parsedValue = JSON.parse(mainBalance);
+
+      if (typeof parsedValue === "number") {
+        setAccountBalance(parsedValue);
+      }
+    }
+
+    const envelopes = localStorage.getItem("envelopes");
+
+    if (envelopes) {
+      const parsedValue = JSON.parse(envelopes);
+
+      if (Array.isArray(parsedValue)) {
+        setEnvelopes(parsedValue);
+      }
+    }
+  }, []);
+
+  const saveMainBalance = (newVal: number) => {
+    localStorage.setItem("main-balance", JSON.stringify(newVal));
+  };
+
   const addToBalance = (amount: number) => {
-    setAccountBalance((balance) => balance + amount);
+    setAccountBalance((prevBalance) => {
+      const newVal = prevBalance + amount;
+      saveMainBalance(newVal);
+
+      return newVal;
+    });
+  };
+
+  const updateAppEnvelopeBalance = (index: number, amount: number) => {
+    setEnvelopes((prevEnvelopes) => {
+      const tempEnvelopes = prevEnvelopes.map((envelope, i) =>
+        i === index
+          ? { ...envelope, balance: amount }
+          : envelope
+      );
+      localStorage.setItem("envelopes", JSON.stringify(tempEnvelopes));
+
+      return tempEnvelopes;
+    });
+  };
+
+  const subtractFromAccountBalance = (amount: number) => {
+    setAccountBalance((prevBalance) => {
+      const newVal = prevBalance - amount;
+      saveMainBalance(newVal);
+
+      return newVal;
+    });
   };
 
   const addEnvelope = (title: string) => {
@@ -34,26 +83,36 @@ function App() {
 
     const newEnvelope: IEnvelopeListItem = {
       title: title,
+      balance: 0,
     };
     setEnvelopes((prevEnvelopes) => [...prevEnvelopes, newEnvelope]);
 
     setErrorMessage(null);
   };
 
-  const addFunds = (amount: number) => {
+  const addAccountFunds = (amount: string) => {
     if (isNaN(amount) || amount <= 0) {
       setErrorMessage("Please enter a valid amount to add.");
       return;
     }
 
-    setAccountBalance((balance) => balance + amount);
+    setAccountBalance((prevBalance) => {
+      const newVal = prevBalance + amount;
+      saveMainBalance(newVal);
+
+      return newVal;
+    });
+
     setErrorMessage(null);
   };
 
   const deleteEnvelope = (index: number) => {
-    setEnvelopes((prevEnvelopes) =>
-      prevEnvelopes.filter((_, i) => i !== index)
-    );
+    setEnvelopes((prevEnvelopes) => {
+      const temp = prevEnvelopes.filter((_, i) => i !== index);
+      localStorage.setItem("envelopes", JSON.stringify(temp));
+
+      return temp;
+    });
   };
 
   const renderList = envelopes.map((envelope, index) => (
@@ -61,9 +120,12 @@ function App() {
       key={index}
       title={envelope.title}
       index={index}
+      balance={envelope.balance}
       accountBalance={accountBalance}
       setAccountBalance={setAccountBalance}
       addToBalance={addToBalance}
+      updateEnvelopeBalance={updateAppEnvelopeBalance}
+      subtractFromBalance={subtractFromAccountBalance}
       deleteEnvelope={deleteEnvelope}
     />
   ));
@@ -78,7 +140,7 @@ function App() {
         <div className="add-container">
           <button
             className="add-title"
-            onClick={() => addFunds(Number(newFundsAmount))}
+            onClick={() => addAccountFunds(Number(newFundsAmount))}
           >
             Add Funds
           </button>

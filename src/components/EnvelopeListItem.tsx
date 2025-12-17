@@ -3,41 +3,34 @@ import "./EnvelopeListItem.css";
 
 export interface IEnvelopeListItem {
   title: string;
+  balance: number;
 }
 
 interface IEnvelopeListItemProps {
   title: string;
+  balance: number;
   index: number;
   accountBalance: number;
   setAccountBalance: React.Dispatch<React.SetStateAction<number>>;
   addToBalance: (index: number) => void;
+  subtractFromBalance: (index: number) => void;
+  updateEnvelopeBalance: (index: number, amount: number) => void;
   deleteEnvelope: (index: number) => void;
 }
 
 const EnvelopeListItem: React.FC<IEnvelopeListItemProps> = ({
   title,
   index,
+  balance,
   accountBalance,
-  setAccountBalance,
   addToBalance,
+  subtractFromBalance,
+  updateEnvelopeBalance,
   deleteEnvelope,
 }) => {
-  const [envelopeBalance, setEnvelopeBalance] = useState<number>(0);
+  const [envelopeBalance, setEnvelopeBalance] = useState<number>(balance);
   const [transaction, setTransaction] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const subtractFromBalance = () => {
-    if (
-      transaction === "" ||
-      isNaN(Number(transaction)) ||
-      accountBalance - Number(transaction) < 0
-    ) {
-      setErrorMessage("Insufficient funds");
-      return;
-    }
-
-    setAccountBalance((balance) => balance - Number(transaction));
-  };
 
   return (
     <div className="envelope" key={index}>
@@ -66,10 +59,11 @@ const EnvelopeListItem: React.FC<IEnvelopeListItemProps> = ({
                 return;
               }
 
-              subtractFromBalance();
+              subtractFromBalance(Number(transaction));
               setEnvelopeBalance(
-                (prevBalance) => prevBalance + parseFloat(transaction)
+                (prevBalance) => prevBalance + Number(transaction)
               );
+              updateEnvelopeBalance(index, envelopeBalance + Number(transaction));
               setErrorMessage(null);
             }}
           >
@@ -88,9 +82,10 @@ const EnvelopeListItem: React.FC<IEnvelopeListItemProps> = ({
               }
 
               setEnvelopeBalance(
-                (prevBalance) => prevBalance - parseFloat(transaction)
+                (prevBalance) => prevBalance - Number(transaction)
               );
-              setErrorMessage(null)
+              updateEnvelopeBalance(index, envelopeBalance - Number(transaction));
+              setErrorMessage(null);
             }}
           >
             Subtract Funds
