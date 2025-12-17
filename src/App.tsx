@@ -90,7 +90,7 @@ function App() {
     setErrorMessage(null);
   };
 
-  const addAccountFunds = (amount: string) => {
+  const addAccountFunds = (amount: number) => {
     if (isNaN(amount) || amount <= 0) {
       setErrorMessage("Please enter a valid amount to add.");
       return;
